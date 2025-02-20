@@ -6,6 +6,22 @@
     "main"
   ],
   "permissions": [
-    "core:default"
+    "core:default",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "args": [
+            {
+              "validator": "\\S+"
+            }
+          ],
+          "name": "../bin/video-downloader/validate-video-url",
+          "sidecar": true
+        }
+      ]
+    },
+    "shell:allow-open",
+    "shell:default"
   ]
 }
