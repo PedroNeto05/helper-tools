@@ -7,14 +7,13 @@ def get_video_info(url: str) -> dict:
     """
     Get video information from a given URL
     """
-    # Configure yt-dlp options
+
     ydl_opts = {
         'quiet': True,
         'no_warnings': True,
         'extract_flat': True,
     }
 
-    # Create video info dictionary
     video_data = {
         'title': None,
         'duration': None,
