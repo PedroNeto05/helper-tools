@@ -20,6 +20,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { invoke } from '@tauri-apps/api/core';
 
 const formSchema = z.object({
   url: z.string().url(),
@@ -57,29 +58,17 @@ export function DownloadVideoForm({
     },
   });
 
-  async function checkYoutubeUrl(url: string) {
-    const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`;
-
-    try {
-      const response = await fetch(oembedUrl);
-      return response.ok;
-    } catch (error) { // eslint-disable-line
-      return false;
-    }
-  }
-
   async function validateUrl() {
+    const { url } = form.getValues();
     setIsFetching(true);
-    const url = form.getValues('url');
-    const isValid = await checkYoutubeUrl(url);
-
-    setValidUrl(isValid);
-    setInvalidUrlDialog(!isValid);
+    try {
+      await invoke('validate_url', { url });
+      setValidUrl(true);
+    } catch (error) { // eslint-disable-line
+      setInvalidUrlDialog(true);
+      setValidUrl(false);
+    }
     setIsFetching(false);
-
-    if (!isValid) return;
-
-    await getVideoInfo(url);
   }
 
   async function getVideoInfo(url: string) {
