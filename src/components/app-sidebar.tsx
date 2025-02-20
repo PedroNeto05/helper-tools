@@ -9,6 +9,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
+import { Settings } from 'lucide-react';
 import Link from 'next/link';
 
 export function AppSidebar() {
@@ -48,7 +49,14 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter className='p-4'>
+        <SidebarMenuButton asChild>
+          <Link href='/settings'>
+            <Settings />
+            <div className='text-base'>Configurações</div>
+          </Link>
+        </SidebarMenuButton>
+      </SidebarFooter>
     </Sidebar>
   );
 }
