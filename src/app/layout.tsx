@@ -5,6 +5,7 @@ import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import { usePathname } from 'next/navigation';
+import { ThemeProvider } from '@/components/theme-provider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -37,22 +38,33 @@ export default function RootLayout({
   };
 
   return (
-    <html lang='pt-br' className='cursor-default select-none'>
+    <html
+      lang='pt-br'
+      className='cursor-default select-none'
+      suppressHydrationWarning
+    >
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <SidebarProvider>
-          <AppSidebar />
-          <div className='flex h-screen w-full flex-col'>
-            <div className='flex w-full space-x-5 p-4'>
-              <SidebarTrigger className='cursor-pointer' />
-              <h1 className='text-xl font-semibold'>
-                {getPageTitle(pathname)}
-              </h1>
-            </div>
-            <Separator />
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='system'
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SidebarProvider>
+            <AppSidebar />
+            <div className='flex h-screen w-full flex-col'>
+              <div className='flex w-full space-x-5 p-4'>
+                <SidebarTrigger className='cursor-pointer' />
+                <h1 className='text-xl font-semibold'>
+                  {getPageTitle(pathname)}
+                </h1>
+              </div>
+              <Separator />
 
-            <div className='flex-1 p-4'>{children}</div>
-          </div>
-        </SidebarProvider>
+              <div className='flex-1 p-4'>{children}</div>
+            </div>
+          </SidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
