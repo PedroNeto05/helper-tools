@@ -17,10 +17,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { invoke } from '@tauri-apps/api/core';
+import { VideoInfo } from '@/app/video/download/page';
+import Image from 'next/image';
+import { Skeleton } from './ui/skeleton';
+import { format } from 'date-fns';
+import { formatTime } from '@/utils/format-time';
 
 const formSchema = z.object({
   url: z.string().url(),
@@ -29,24 +34,30 @@ const formSchema = z.object({
   format: z.string().optional(),
 });
 
-type DownloadVideoFormProps = {
+interface DownloadVideoFormProps {
   isFetching: boolean;
   validUrl: boolean;
   audioOnly: boolean;
+  videoInfo: VideoInfo | null;
   setAudioOnly: (value: boolean) => void;
   setIsFetching: (value: boolean) => void;
   setValidUrl: (value: boolean) => void;
   setInvalidUrlDialog: (value: boolean) => void;
-};
+  setDialogErrorMessage: (value: string) => void;
+  setVideoInfo: (value: VideoInfo | null) => void;
+}
 
 export function DownloadVideoForm({
   audioOnly,
   isFetching,
   setAudioOnly,
   validUrl,
+  videoInfo,
   setIsFetching,
   setValidUrl,
   setInvalidUrlDialog,
+  setDialogErrorMessage,
+  setVideoInfo,
 }: DownloadVideoFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,69 +70,82 @@ export function DownloadVideoForm({
   });
 
   async function validateUrl() {
-    const { url } = form.getValues();
+    setVideoInfo(null);
     setIsFetching(true);
+    const { url } = form.getValues();
     try {
       await invoke('validate_url', { url });
+      await getVideoInfo(url);
       setValidUrl(true);
     } catch (error) { // eslint-disable-line
       setInvalidUrlDialog(true);
+      setDialogErrorMessage('URL inválida');
       setValidUrl(false);
+      setVideoInfo(null);
     }
     setIsFetching(false);
   }
 
   async function getVideoInfo(url: string) {
-    console.log('Getting video info from:', url);
+    try {
+      const videoInfo: VideoInfo = await invoke('get_video_info', {
+        url,
+      });
+      setVideoInfo(videoInfo);
+    } catch (error) { // eslint-disable-line
+      setInvalidUrlDialog(true);
+      setDialogErrorMessage('Erro ao obter informações do vídeo');
+      setValidUrl(false);
+    }
   }
 
   return (
     <Form {...form}>
-      <Card className='flex flex-1 items-center p-4'>
-        <FormField
-          control={form.control}
-          name='url'
-          render={({ field }) => (
-            <FormItem className='w-full'>
-              <FormLabel>URL do vídeo</FormLabel>
-              <FormControl>
-                <div className='flex space-x-5'>
-                  <Input
-                    {...field}
-                    placeholder='https://exemplo.com'
-                    className='p-6'
-                  />
-                  <Button
-                    type='button'
-                    className='cursor-pointer p-6'
-                    disabled={isFetching}
-                    onClick={validateUrl}
-                  >
-                    {isFetching ? (
-                      <LoaderCircle className='animate-spin' />
-                    ) : (
-                      'Pesquisar'
-                    )}
-                  </Button>
-                </div>
-              </FormControl>
-            </FormItem>
-          )}
-        />
-      </Card>
-      <Card className='flex flex-1 items-center p-4'>
+      <Card className='flex-1'>
         <CardHeader className='text-center'>
-          <CardTitle className='text-3xl'>Informações do Vídeo</CardTitle>
+          <CardTitle className='text-3xl'>URL do Vídeo</CardTitle>
         </CardHeader>
+        <CardContent className='w-full'>
+          <FormField
+            control={form.control}
+            name='url'
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <FormControl>
+                  <div className='flex space-x-5'>
+                    <Input
+                      {...field}
+                      placeholder='https://exemplo.com'
+                      className='p-6'
+                    />
+                    <Button
+                      type='button'
+                      className='cursor-pointer p-6'
+                      disabled={isFetching}
+                      onClick={validateUrl}
+                    >
+                      {isFetching ? (
+                        <LoaderCircle className='animate-spin' />
+                      ) : (
+                        'Pesquisar'
+                      )}
+                    </Button>
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </CardContent>
       </Card>
-      <Card className='flex flex-10 flex-col justify-between space-y-4 p-4'>
+
+      <Card className='flex flex-10 flex-col justify-between'>
         <div>
           <CardHeader className='text-center'>
             <CardTitle className='text-3xl'>
               Configurações de Download
             </CardTitle>
           </CardHeader>
-          <CardContent className='space-y-4 p-0'>
+          <CardContent className='space-y-4'>
             <FormField
               control={form.control}
               name='audioOnly'
@@ -199,9 +223,55 @@ export function DownloadVideoForm({
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name='format'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Formato do Audio</FormLabel>
+                  <FormControl>
+                    <Select
+                      disabled={!validUrl || !audioOnly}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <SelectTrigger className='w-full p-6'>
+                        <SelectValue placeholder='Selecione o formato' />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value='mp4' className='p-4'>
+                          MP4
+                        </SelectItem>
+                        <SelectItem value='mov' className='p-4'>
+                          MOV
+                        </SelectItem>
+                        <SelectItem value='webm' className='p-4'>
+                          WebM
+                        </SelectItem>
+                        <SelectItem value='webm' className='p-4'>
+                          WebM
+                        </SelectItem>
+                        <SelectItem value='webm' className='p-4'>
+                          WebM
+                        </SelectItem>
+                        <SelectItem value='webm' className='p-4'>
+                          WebM
+                        </SelectItem>
+                        <SelectItem value='webm' className='p-4'>
+                          WebM
+                        </SelectItem>
+                        <SelectItem value='webm' className='p-4'>
+                          WebM
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           </CardContent>
         </div>
-        <CardFooter className='p-0'>
+        <CardFooter className=''>
           <Button
             type='submit'
             disabled={!validUrl}

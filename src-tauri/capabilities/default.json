@@ -11,13 +11,22 @@
       "identifier": "shell:allow-execute",
       "allow": [
         {
+          "name": "../bin/video-downloader/validate-video-url",
+          "sidecar": true,
           "args": [
             {
               "validator": "\\S+"
             }
-          ],
-          "name": "../bin/video-downloader/validate-video-url",
-          "sidecar": true
+          ]
+        },
+        {
+          "name": "../bin/video-downloader/get-video-info",
+          "sidecar": true,
+          "args": [
+            {
+              "validator": "\\S+"
+            }
+          ]
         }
       ]
     },

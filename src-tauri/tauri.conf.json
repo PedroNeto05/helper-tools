@@ -27,7 +27,8 @@
     "active": true,
     "targets": "all",
     "externalBin": [
-      "../bin/video-downloader/validate-video-url"
+      "../bin/video-downloader/validate-video-url",
+      "../bin/video-downloader/get-video-info"
     ],
     "icon": [
       "icons/32x32.png",
