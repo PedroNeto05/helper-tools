@@ -83,8 +83,8 @@ export default function VideoDownloader() {
                   alt='Thumbnail'
                   className='rounded-lg'
                 />
-                <div className='flex w-full flex-col overflow-hidden'>
-                  <p className='overflow-hidden text-xl font-semibold'>
+                <div className='flex w-full max-w-[40rem] flex-col truncate'>
+                  <p className='truncate text-xl font-semibold'>
                     {videoInfo.title}
                   </p>
                   <p className='text-gray-500'>
