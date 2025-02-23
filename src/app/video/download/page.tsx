@@ -1,7 +1,7 @@
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useState } from 'react';
-import { DownloadVideoForm } from '@/components/download-video-form';
+import { DownloadVideoForm } from '@/app/video/download/components/download-video-form';
 import {
   Dialog,
   DialogContent,

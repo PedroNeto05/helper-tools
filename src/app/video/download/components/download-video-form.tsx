@@ -1,31 +1,33 @@
 import { LoaderCircle } from 'lucide-react';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from './ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel } from './ui/form';
-import { Input } from './ui/input';
-import { Switch } from './ui/switch';
+} from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from './ui/select';
-import { set, useForm } from 'react-hook-form';
+} from '@/components/ui/select';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { invoke } from '@tauri-apps/api/core';
 import { VideoInfo } from '@/app/video/download/page';
-import Image from 'next/image';
-import { Skeleton } from './ui/skeleton';
-import { format } from 'date-fns';
-import { formatTime } from '@/utils/format-time';
 
 const formSchema = z.object({
   url: z.string().url(),
@@ -38,7 +40,6 @@ interface DownloadVideoFormProps {
   isFetching: boolean;
   validUrl: boolean;
   audioOnly: boolean;
-  videoInfo: VideoInfo | null;
   setAudioOnly: (value: boolean) => void;
   setIsFetching: (value: boolean) => void;
   setValidUrl: (value: boolean) => void;
@@ -52,7 +53,6 @@ export function DownloadVideoForm({
   isFetching,
   setAudioOnly,
   validUrl,
-  videoInfo,
   setIsFetching,
   setValidUrl,
   setInvalidUrlDialog,
