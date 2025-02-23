@@ -40,6 +40,7 @@ interface DownloadVideoFormProps {
   isFetching: boolean;
   validUrl: boolean;
   audioOnly: boolean;
+  videoInfo: VideoInfo | null;
   setAudioOnly: (value: boolean) => void;
   setIsFetching: (value: boolean) => void;
   setValidUrl: (value: boolean) => void;
@@ -51,6 +52,7 @@ interface DownloadVideoFormProps {
 export function DownloadVideoForm({
   audioOnly,
   isFetching,
+  videoInfo,
   setAudioOnly,
   validUrl,
   setIsFetching,
@@ -183,9 +185,15 @@ export function DownloadVideoForm({
                         <SelectValue placeholder='Selecione a qualidade' />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='1080p 60fps' className='p-4'>
-                          1080p 60fps
-                        </SelectItem>
+                        {videoInfo?.formats.map((format, index) => (
+                          <SelectItem
+                            key={index}
+                            value={format.resolution}
+                            className='p-4'
+                          >
+                            {format.resolution}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormControl>

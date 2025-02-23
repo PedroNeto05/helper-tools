@@ -49,6 +49,7 @@ export default function VideoDownloader() {
         <DownloadVideoForm
           audioOnly={audioOnly}
           isFetching={isFetching}
+          videoInfo={videoInfo}
           setAudioOnly={setAudioOnly}
           validUrl={validUrl}
           setValidUrl={setValidUrl}
