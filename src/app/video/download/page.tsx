@@ -1,5 +1,11 @@
 'use client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { useState } from 'react';
 import { DownloadVideoForm } from '@/app/video/download/components/download-video-form';
 import {
@@ -12,6 +18,8 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
 import { formatTime } from '@/utils/format-time';
+import { open } from '@tauri-apps/plugin-dialog';
+import { Input } from '@/components/ui/input';
 
 type Format = {
   ext: string;
@@ -33,6 +41,7 @@ export default function VideoDownloader() {
   const [dialogError, setDialogError] = useState<boolean>(false);
   const [dialogErrorMessage, setDialogErrorMessage] = useState<string>('');
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
+  const [downloadPath, setDownloadPath] = useState<string>('');
 
   return (
     <div className='flex h-full space-x-5'>
@@ -42,7 +51,6 @@ export default function VideoDownloader() {
           isFetching={isFetching}
           setAudioOnly={setAudioOnly}
           validUrl={validUrl}
-          videoInfo={videoInfo}
           setValidUrl={setValidUrl}
           setIsFetching={setIsFetching}
           setInvalidUrlDialog={setDialogError}
@@ -85,8 +93,45 @@ export default function VideoDownloader() {
             ) : null}
           </CardContent>
         </Card>
-        <Card className='flex-10 p-4'>
-          <h1>fila de downloads e baixar a fila</h1>
+        <Card className='flex-10'>
+          <CardHeader className='text-center'>
+            <CardTitle className='text-3xl'>Fila de Download</CardTitle>
+          </CardHeader>
+          <CardContent className=''></CardContent>
+        </Card>
+        <Card className='flex-1'>
+          <CardHeader className='text-center text-3xl'>
+            <CardTitle>Pasta de Download</CardTitle>
+          </CardHeader>
+          <CardContent className='flex space-x-4'>
+            <Input
+              value={downloadPath}
+              placeholder='Caminho da pasta de download'
+              disabled
+            />
+            <Button
+              disabled
+              onClick={async () => {
+                const selectedPath = await open({
+                  directory: true,
+                  multiple: false,
+                });
+                if (selectedPath) {
+                  setDownloadPath(selectedPath);
+                }
+              }}
+            >
+              Selecionar Pasta de Download
+            </Button>
+          </CardContent>
+          <CardFooter>
+            <Button
+              className='w-full p-6'
+              disabled={!validUrl || !downloadPath}
+            >
+              Baixar Fila
+            </Button>
+          </CardFooter>
         </Card>
       </div>
       <Dialog open={dialogError} onOpenChange={setDialogError}>
