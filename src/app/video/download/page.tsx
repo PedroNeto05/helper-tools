@@ -77,7 +77,7 @@ export default function VideoDownloader() {
             ) : videoInfo ? (
               <div className='flex space-x-6'>
                 <Image
-                  src={videoInfo.thumbnail as string}
+                  src={videoInfo.thumbnail}
                   width={200}
                   height={200}
                   alt='Thumbnail'
