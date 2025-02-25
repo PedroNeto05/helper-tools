@@ -43,16 +43,19 @@ export default function VideoDownloader() {
   const [dialogErrorMessage, setDialogErrorMessage] = useState<string>('');
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
   const [downloadPath, setDownloadPath] = useState<string>('');
+  const [currentUrl, setCurrentUrl] = useState<string>('');
 
   return (
     <div className='flex h-full space-x-5'>
       <div className='flex flex-1 flex-col space-y-5'>
         <DownloadVideoForm
+          currentUrl={currentUrl}
           audioOnly={audioOnly}
           isFetching={isFetching}
           videoInfo={videoInfo}
-          setAudioOnly={setAudioOnly}
           validUrl={validUrl}
+          setAudioOnly={setAudioOnly}
+          setCurrentUrl={setCurrentUrl}
           setValidUrl={setValidUrl}
           setIsFetching={setIsFetching}
           setInvalidUrlDialog={setDialogError}
