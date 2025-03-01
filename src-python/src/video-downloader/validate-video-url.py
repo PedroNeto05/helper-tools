@@ -1,6 +1,6 @@
 import sys
 from yt_dlp import YoutubeDL
-from yt_dlp.utils import DownloadError
+
 
 def validate_video_url(url: str) -> bool:
     """
@@ -16,8 +16,6 @@ def validate_video_url(url: str) -> bool:
         with YoutubeDL(ydl_opts) as ydl:
             ydl.extract_info(url, download=False)
             return True
-    except DownloadError:
-        return False
     except Exception:
         return False
 
