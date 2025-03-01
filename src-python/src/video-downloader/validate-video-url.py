@@ -8,9 +8,9 @@ def validate_video_url(url: str) -> bool:
     Returns True if valid, False otherwise
     """
     ydl_opts = {
-      'quiet': True,
-      'no_warnings': True,
-      'extract_flat': True,
+        'quiet': True,
+        'no_warnings': True,
+        'extract_flat': True,
     }
     try:
         with YoutubeDL(ydl_opts) as ydl:
@@ -19,6 +19,7 @@ def validate_video_url(url: str) -> bool:
     except Exception:
         return False
 
+
 def main():
     if len(sys.argv) != 2:
         sys.exit(1)
@@ -26,5 +27,6 @@ def main():
     result = validate_video_url(url)
     sys.exit(0 if result else 1)
 
+
 if __name__ == "__main__":
-  main()
+    main()
