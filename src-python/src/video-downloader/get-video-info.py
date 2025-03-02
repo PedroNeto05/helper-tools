@@ -28,12 +28,21 @@ def get_video_info(url: str) -> dict:
             video_data['title'] = info.get('title')
             video_data['duration'] = info.get('duration')
             video_data['thumbnail'] = info.get('thumbnail')
+            formats = info.get('formats', [])
 
-            for f in info.get('formats', []):
+            if len(formats) < 1:
+                raise 'No Formats available'
+
+            for f in formats:
+                height = f.get('height')
+                if height and height < 720:
+                    continue
                 video_data['formats'].append({
                     'format_id': f.get('format_id'),
-                    'ext': f.get('ext'),
                     'resolution': f.get('resolution'),
+                    'tbr': f.get('tbr', 0),
+                    'fps': f.get('fps', 0),
+                    'ext': f.get('ext')
                 })
 
         return video_data
