@@ -22,17 +22,26 @@ import { open } from '@tauri-apps/plugin-dialog';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
 
-type Format = {
-  ext: string;
+type VideoFormat = {
   format_id: string;
-  resolution: string;
+  resolution: number;
+  tbr: number | null;
+  fps: number;
+  ext: string;
+};
+
+type AudioFormat = {
+  format_id: string;
+  tbr: number | null;
+  ext: string;
 };
 
 export type VideoInfo = {
   title: string;
-  thumbnail: string;
   duration: number;
-  formats: Format[];
+  thumbnail: string;
+  video_formats: VideoFormat[];
+  audio_formats: AudioFormat[];
 };
 
 export default function VideoDownloader() {
@@ -42,22 +51,19 @@ export default function VideoDownloader() {
   const [dialogError, setDialogError] = useState<boolean>(false);
   const [dialogErrorMessage, setDialogErrorMessage] = useState<string>('');
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
+  const [currentUrl, setCurrentUrl] = useState('');
   const [downloadPath, setDownloadPath] = useState<string>('');
 
   return (
     <div className='flex h-full space-x-5'>
       <div className='flex flex-1 flex-col space-y-5'>
         <DownloadVideoForm
-          audioOnly={audioOnly}
           isFetching={isFetching}
-          videoInfo={videoInfo}
-          setAudioOnly={setAudioOnly}
-          validUrl={validUrl}
-          setValidUrl={setValidUrl}
-          setIsFetching={setIsFetching}
-          setInvalidUrlDialog={setDialogError}
-          setVideoInfo={setVideoInfo}
+          setDialogError={setDialogError}
           setDialogErrorMessage={setDialogErrorMessage}
+          setIsFetching={setIsFetching}
+          setCurrentUrl={setCurrentUrl}
+          setVideoInfo={setVideoInfo}
         />
       </div>
       <div className='flex flex-1 flex-col space-y-5'>
