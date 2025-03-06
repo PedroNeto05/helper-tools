@@ -17,10 +17,12 @@ type SearchVideoForm = z.infer<typeof searchVideoFormSchema>;
 
 interface DownloadVideoFormProps {
   isFetching: boolean;
+  isValidVideoUrl: boolean;
   setIsFetching: (value: boolean) => void;
+  setIsValidVideoUrl: (value: boolean) => void;
   setDialogError: (value: boolean) => void;
   setDialogErrorMessage: (value: string) => void;
-  setCurrentUrl: (value: string) => void;
+  setValidUrl: (value: string) => void;
   setVideoInfo: (value: VideoInfo | null) => void;
 }
 
@@ -30,9 +32,10 @@ export function DownloadVideoForm({
   setDialogError,
   setDialogErrorMessage,
   setVideoInfo,
-  setCurrentUrl,
+  setValidUrl,
+  setIsValidVideoUrl,
+  isValidVideoUrl,
 }: DownloadVideoFormProps) {
-  const searchVideoForm = useForm({
   const searchVideoForm = useForm<SearchVideoForm>({
     resolver: zodResolver(searchVideoFormSchema),
     mode: 'onSubmit',
@@ -44,7 +47,7 @@ export function DownloadVideoForm({
 
   async function handleSearch(data: SearchVideoForm) {
     setIsFetching(true);
-    setCurrentUrl('');
+    setValidUrl('');
     setVideoInfo(null);
     try {
       await invoke('validate_url', { url: data.url });
@@ -54,8 +57,10 @@ export function DownloadVideoForm({
       return;
     }
     setCurrentUrl(data.url);
+    setValidUrl(data.url);
     await getVideoInfo(data.url);
     setIsFetching(false);
+    setIsValidVideoUrl(true);
   }
 
   function handleSearchError() {

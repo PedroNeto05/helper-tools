@@ -46,12 +46,12 @@ export type VideoInfo = {
 
 export default function VideoDownloader() {
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  const [validUrl, setValidUrl] = useState<boolean>(false);
+  const [isValidVideoUrl, setIsValidVideoUrl] = useState<boolean>(false);
   const [audioOnly, setAudioOnly] = useState<boolean>(false);
   const [dialogError, setDialogError] = useState<boolean>(false);
   const [dialogErrorMessage, setDialogErrorMessage] = useState<string>('');
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
-  const [currentUrl, setCurrentUrl] = useState('');
+  const [validUrl, setValidUrl] = useState('');
   const [downloadPath, setDownloadPath] = useState<string>('');
 
   return (
@@ -62,8 +62,10 @@ export default function VideoDownloader() {
           setDialogError={setDialogError}
           setDialogErrorMessage={setDialogErrorMessage}
           setIsFetching={setIsFetching}
-          setCurrentUrl={setCurrentUrl}
+          setValidUrl={setValidUrl}
           setVideoInfo={setVideoInfo}
+          setIsValidVideoUrl={setIsValidVideoUrl}
+          isValidVideoUrl={isValidVideoUrl}
         />
       </div>
       <div className='flex flex-1 flex-col space-y-5'>
@@ -140,7 +142,7 @@ export default function VideoDownloader() {
           <CardFooter>
             <Button
               className='w-full p-6'
-              disabled={!validUrl || !downloadPath}
+              disabled={!isValidVideoUrl || !downloadPath}
             >
               Baixar Fila
             </Button>
