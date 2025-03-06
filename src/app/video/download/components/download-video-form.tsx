@@ -1,19 +1,33 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Form, FormField } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { VideoInfo } from '../page';
 import { invoke } from '@tauri-apps/api/core';
 import { LoaderCircle } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const searchVideoFormSchema = z.object({
   url: z.string().url('Url Inválida'),
 });
 
 type SearchVideoForm = z.infer<typeof searchVideoFormSchema>;
+
+const downloadVideoOptionsSchema = z.object({
+  resolution: z.number(),
+  ext: z.string(),
+});
+
+type DownloadVideoOptionsForm = z.infer<typeof downloadVideoOptionsSchema>;
 
 interface DownloadVideoFormProps {
   isFetching: boolean;
@@ -42,21 +56,37 @@ export function DownloadVideoForm({
     defaultValues: {
       url: '',
     },
+  });
+
+  const downloadVideoOptionsForm = useForm({
+    resolver: zodResolver(downloadVideoOptionsSchema),
     mode: 'onSubmit',
+    defaultValues: {
+      resolution: 0,
+      ext: '',
+    },
+  });
+
+  const currentResolution = useWatch({
+    control: downloadVideoOptionsForm.control,
+    name: 'resolution',
+    defaultValue: 0,
   });
 
   async function handleSearch(data: SearchVideoForm) {
+    downloadVideoOptionsForm.reset();
     setIsFetching(true);
     setValidUrl('');
     setVideoInfo(null);
+    setIsValidVideoUrl(false);
     try {
       await invoke('validate_url', { url: data.url });
     } catch (e) { // eslint-disable-line
       setDialogError(true);
       setDialogErrorMessage('Url Inválida');
+      setIsFetching(false);
       return;
     }
-    setCurrentUrl(data.url);
     setValidUrl(data.url);
     await getVideoInfo(data.url);
     setIsFetching(false);
@@ -71,6 +101,13 @@ export function DownloadVideoForm({
       setDialogErrorMessage(errors.url.message);
       return;
     }
+  }
+
+  function handleDownloadOptions(data: DownloadVideoOptionsForm) {
+    console.log(data);
+  }
+  function handleDownloadOptionsError() {
+    console.log('erro');
   }
 
   async function getVideoInfo(url: string) {
@@ -121,6 +158,68 @@ export function DownloadVideoForm({
                     </div>
                   );
                 }}
+              />
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle className='text-center text-3xl'>
+            Configurações de Download
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...downloadVideoOptionsForm}>
+            <form
+              className='space-y-4'
+              onSubmit={downloadVideoOptionsForm.handleSubmit(
+                handleDownloadOptions,
+                handleDownloadOptionsError
+              )}
+            >
+              <FormField
+                control={downloadVideoOptionsForm.control}
+                name='resolution'
+                disabled={!isValidVideoUrl}
+                render={({ field }) => (
+                  <FormItem>
+                    <Select {...field}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Selecione a resolução do vídeo' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value='144'>144p</SelectItem>
+                        <SelectItem value='240'>240p</SelectItem>
+                        <SelectItem value='360'>360p</SelectItem>
+                        <SelectItem value='480'>480p</SelectItem>
+                        <SelectItem value='720'>720p</SelectItem>
+                        <SelectItem value='1080'>1080p</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={downloadVideoOptionsForm.control}
+                name='ext'
+                disabled={!isValidVideoUrl || !currentResolution}
+                render={({ field }) => (
+                  <FormItem>
+                    <Select {...field}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Selecione a extensão do vídeo' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value={'1'}>1</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
               />
             </form>
           </Form>
