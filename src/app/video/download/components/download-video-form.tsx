@@ -33,6 +33,7 @@ export function DownloadVideoForm({
   setCurrentUrl,
 }: DownloadVideoFormProps) {
   const searchVideoForm = useForm({
+  const searchVideoForm = useForm<SearchVideoForm>({
     resolver: zodResolver(searchVideoFormSchema),
     mode: 'onSubmit',
     defaultValues: {
