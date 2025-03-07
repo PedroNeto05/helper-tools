@@ -139,13 +139,12 @@ export function DownloadVideoForm({
               <FormField
                 control={searchVideoForm.control}
                 name='url'
-                disabled={isFetching}
                 render={({ field }) => {
                   return (
                     <div className='flex space-x-4'>
-                      <Input {...field} />
+                      <Input {...field} disabled={isFetching} />
                       <Button
-                        disabled={field.disabled}
+                        disabled={isFetching}
                         type='submit'
                         className='cursor-pointer'
                       >
@@ -181,10 +180,9 @@ export function DownloadVideoForm({
               <FormField
                 control={downloadVideoOptionsForm.control}
                 name='resolution'
-                disabled={!isValidVideoUrl}
                 render={({ field }) => (
                   <FormItem>
-                    <Select {...field}>
+                    <Select {...field} disabled={!isValidVideoUrl}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder='Selecione a resolução do vídeo' />
@@ -205,10 +203,12 @@ export function DownloadVideoForm({
               <FormField
                 control={downloadVideoOptionsForm.control}
                 name='ext'
-                disabled={!isValidVideoUrl || !currentResolution}
                 render={({ field }) => (
                   <FormItem>
-                    <Select {...field}>
+                    <Select
+                      {...field}
+                      disabled={!isValidVideoUrl || !currentResolution}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder='Selecione a extensão do vídeo' />
