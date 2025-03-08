@@ -35,11 +35,11 @@ def get_video_info(url: str) -> dict:
 
             for f in formats:
                 height = f.get('height')
-                if height and height < 720:
+                if height and height < 144 or height == 180:
                     continue
                 video_data['formats'].append({
                     'format_id': f.get('format_id'),
-                    'resolution': height if height else None,
+                    'resolution': f"{height}" if height else None,
                     'tbr': f.get('tbr', None),
                     'fps': f.get('fps', None),
                     'ext': f.get('ext')

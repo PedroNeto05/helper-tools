@@ -24,6 +24,7 @@ type SearchVideoForm = z.infer<typeof searchVideoFormSchema>;
 
 const downloadVideoOptionsSchema = z.object({
   resolution: z.number(),
+  resolution: z.string(),
   ext: z.string(),
 });
 
@@ -62,7 +63,7 @@ export function DownloadVideoForm({
     resolver: zodResolver(downloadVideoOptionsSchema),
     mode: 'onSubmit',
     defaultValues: {
-      resolution: 0,
+      resolution: '',
       ext: '',
     },
   });
@@ -70,7 +71,7 @@ export function DownloadVideoForm({
   const currentResolution = useWatch({
     control: downloadVideoOptionsForm.control,
     name: 'resolution',
-    defaultValue: 0,
+    defaultValue: '',
   });
 
   async function handleSearch(data: SearchVideoForm) {

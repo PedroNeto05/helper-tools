@@ -3,7 +3,7 @@ use tauri_plugin_shell::ShellExt;
 #[derive(serde::Deserialize)]
 struct Format {
     format_id: String,
-    resolution: Option<u32>,
+    resolution: Option<String>,
     tbr: Option<f32>,
     fps: Option<f32>,
     ext: String,
@@ -19,7 +19,7 @@ struct VideoInfo {
 #[derive(serde::Serialize)]
 struct VideoFormat {
     format_id: String,
-    resolution: u32,
+    resolution: String,
     tbr: Option<f32>,
     fps: f32,
     ext: String,
