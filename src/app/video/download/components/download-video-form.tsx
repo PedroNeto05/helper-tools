@@ -3,7 +3,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { VideoInfo } from '../page';
 import { invoke } from '@tauri-apps/api/core';
@@ -173,20 +179,19 @@ export function DownloadVideoForm({
         </CardContent>
       </Card>
       <Card>
-        <CardHeader>
-          <CardTitle className='text-center text-3xl'>
-            Configurações de Download
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...downloadVideoOptionsForm}>
-            <form
-              className='space-y-4'
-              onSubmit={downloadVideoOptionsForm.handleSubmit(
-                handleDownloadOptions,
-                handleDownloadOptionsError
-              )}
-            >
+        <Form {...downloadVideoOptionsForm}>
+          <form
+            onSubmit={downloadVideoOptionsForm.handleSubmit(
+              handleDownloadOptions,
+              handleDownloadOptionsError
+            )}
+          >
+            <CardHeader>
+              <CardTitle className='text-center text-3xl'>
+                Configurações de Download
+              </CardTitle>
+            </CardHeader>
+            <CardContent className='space-y-4'>
               <FormField
                 control={downloadVideoOptionsForm.control}
                 name='resolution'
@@ -254,9 +259,14 @@ export function DownloadVideoForm({
                   </FormItem>
                 )}
               />
-            </form>
-          </Form>
-        </CardContent>
+            </CardContent>
+            <CardFooter>
+              <Button type='submit' className='w-full'>
+                Adicionar a fila
+              </Button>
+            </CardFooter>
+          </form>
+        </Form>
       </Card>
     </div>
   );
