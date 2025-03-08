@@ -29,8 +29,9 @@ const searchVideoFormSchema = z.object({
 type SearchVideoForm = z.infer<typeof searchVideoFormSchema>;
 
 const downloadVideoOptionsSchema = z.object({
-  resolution: z.coerce.number(),
-  ext: z.string(),
+  resolution: z.coerce.number().min(1, 'A Resolução é obrigatória'),
+  ext: z.string().nonempty({ message: 'A Extensão é obrigatória' }),
+  fps: z.coerce.number({ message: 'O FPS é obrigatório' }),
 });
 
 type DownloadVideoOptionsForm = z.infer<typeof downloadVideoOptionsSchema>;
