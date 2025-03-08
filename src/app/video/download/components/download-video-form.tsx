@@ -103,13 +103,6 @@ export function DownloadVideoForm({
     }
   }
 
-  function handleDownloadOptions(data: DownloadVideoOptionsForm) {
-    console.log(data);
-  }
-  function handleDownloadOptionsError() {
-    console.log('erro');
-  }
-
   async function getVideoInfo(url: string) {
     try {
       const videoInfo: VideoInfo = await invoke('get_video_info', {
@@ -120,6 +113,15 @@ export function DownloadVideoForm({
       setDialogError(true);
       setDialogErrorMessage('Erro ao buscar as informações do vídeo');
     }
+  }
+
+  function handleDownloadOptions(data: DownloadVideoOptionsForm) {
+    console.log(data);
+  }
+  function handleDownloadOptionsError() {
+    const errors = downloadVideoOptionsForm.formState.errors;
+
+    console.log(errors);
   }
 
   return (
