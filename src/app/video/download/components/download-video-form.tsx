@@ -137,8 +137,13 @@ export function DownloadVideoForm({
   }
   function handleDownloadOptionsError() {
     const errors = downloadVideoOptionsForm.formState.errors;
+    const firstError = Object.values(errors).find(
+      (error) => error?.message
+    )?.message;
+    if (!firstError) return;
+    setDialogErrorMessage(firstError);
 
-    console.log(errors);
+    setDialogError(true);
   }
 
   return (
