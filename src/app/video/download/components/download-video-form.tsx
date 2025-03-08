@@ -23,7 +23,6 @@ const searchVideoFormSchema = z.object({
 type SearchVideoForm = z.infer<typeof searchVideoFormSchema>;
 
 const downloadVideoOptionsSchema = z.object({
-  resolution: z.number(),
   resolution: z.string(),
   ext: z.string(),
 });
@@ -33,6 +32,7 @@ type DownloadVideoOptionsForm = z.infer<typeof downloadVideoOptionsSchema>;
 interface DownloadVideoFormProps {
   isFetching: boolean;
   isValidVideoUrl: boolean;
+  videoInfo: VideoInfo | null;
   setIsFetching: (value: boolean) => void;
   setIsValidVideoUrl: (value: boolean) => void;
   setDialogError: (value: boolean) => void;
@@ -50,6 +50,7 @@ export function DownloadVideoForm({
   setValidUrl,
   setIsValidVideoUrl,
   isValidVideoUrl,
+  videoInfo,
 }: DownloadVideoFormProps) {
   const searchVideoForm = useForm<SearchVideoForm>({
     resolver: zodResolver(searchVideoFormSchema),
@@ -71,6 +72,12 @@ export function DownloadVideoForm({
   const currentResolution = useWatch({
     control: downloadVideoOptionsForm.control,
     name: 'resolution',
+    defaultValue: '',
+  });
+
+  const currentExt = useWatch({
+    control: downloadVideoOptionsForm.control,
+    name: 'ext',
     defaultValue: '',
   });
 
@@ -192,12 +199,21 @@ export function DownloadVideoForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value='144'>144p</SelectItem>
-                        <SelectItem value='240'>240p</SelectItem>
-                        <SelectItem value='360'>360p</SelectItem>
-                        <SelectItem value='480'>480p</SelectItem>
-                        <SelectItem value='720'>720p</SelectItem>
-                        <SelectItem value='1080'>1080p</SelectItem>
+                        {Array.from(
+                          new Set(
+                            videoInfo?.video_formats.map(
+                              (format) => format.resolution
+                            )
+                          )
+                        )
+                          .reverse()
+                          .map((res) => {
+                            return (
+                              <SelectItem key={res} value={res}>
+                                {res}p
+                              </SelectItem>
+                            );
+                          })}
                       </SelectContent>
                     </Select>
                   </FormItem>
@@ -218,7 +234,21 @@ export function DownloadVideoForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={'1'}>1</SelectItem>
+                        {currentResolution &&
+                          Array.from(
+                            new Set(
+                              videoInfo?.video_formats
+                                .filter(
+                                  (format) =>
+                                    format.resolution === currentResolution
+                                )
+                                .map((format) => format.ext)
+                            )
+                          ).map((ext) => (
+                            <SelectItem key={ext} value={ext}>
+                              {ext}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                   </FormItem>

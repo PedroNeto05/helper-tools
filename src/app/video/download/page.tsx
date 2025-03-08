@@ -66,6 +66,7 @@ export default function VideoDownloader() {
           setVideoInfo={setVideoInfo}
           setIsValidVideoUrl={setIsValidVideoUrl}
           isValidVideoUrl={isValidVideoUrl}
+          videoInfo={videoInfo}
         />
       </div>
       <div className='flex flex-1 flex-col space-y-5'>
