@@ -29,7 +29,7 @@ const searchVideoFormSchema = z.object({
 type SearchVideoForm = z.infer<typeof searchVideoFormSchema>;
 
 const downloadVideoOptionsSchema = z.object({
-  resolution: z.string(),
+  resolution: z.coerce.number(),
   ext: z.string(),
 });
 
@@ -70,16 +70,18 @@ export function DownloadVideoForm({
     resolver: zodResolver(downloadVideoOptionsSchema),
     mode: 'onSubmit',
     defaultValues: {
-      resolution: '',
+      resolution: 0,
       ext: '',
     },
   });
 
-  const currentResolution = useWatch({
-    control: downloadVideoOptionsForm.control,
-    name: 'resolution',
-    defaultValue: '',
-  });
+  const currentResolution = Number(
+    useWatch({
+      control: downloadVideoOptionsForm.control,
+      name: 'resolution',
+      defaultValue: 0,
+    })
+  );
 
   const currentExt = useWatch({
     control: downloadVideoOptionsForm.control,
@@ -214,7 +216,7 @@ export function DownloadVideoForm({
                           .reverse()
                           .map((res) => {
                             return (
-                              <SelectItem key={res} value={res}>
+                              <SelectItem key={res} value={res.toString()}>
                                 {res}p
                               </SelectItem>
                             );

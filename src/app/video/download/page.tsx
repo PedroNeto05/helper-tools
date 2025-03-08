@@ -24,7 +24,7 @@ import { ScrollArea } from '@radix-ui/react-scroll-area';
 
 type VideoFormat = {
   format_id: string;
-  resolution: string;
+  resolution: number;
   tbr: number | null;
   fps: number;
   ext: string;
