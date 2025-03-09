@@ -1,7 +1,13 @@
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
   Card,
@@ -205,6 +211,7 @@ export function DownloadVideoForm({
                 name='resolution'
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Resolução</FormLabel>
                     <Select {...field} disabled={!isValidVideoUrl}>
                       <FormControl>
                         <SelectTrigger>
@@ -237,6 +244,7 @@ export function DownloadVideoForm({
                 name='ext'
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Extensão</FormLabel>
                     <Select
                       {...field}
                       disabled={!isValidVideoUrl || !currentResolution}
@@ -272,6 +280,8 @@ export function DownloadVideoForm({
                 name='fps'
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Fps</FormLabel>
+
                     <Select
                       {...field}
                       disabled={!isValidVideoUrl || !currentExt}
