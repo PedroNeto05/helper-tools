@@ -68,20 +68,20 @@ const downloadVideoOptionsSchema = z
           path: ['resolution'],
           message: 'A Resolução é obrigatória',
         });
-      }
-      if (!data.fps) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['fps'],
-          message: 'A Extensão é obrigatória',
-        });
-      }
-      if (!data.ext) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['ext'],
-          message: 'O FPS é obrigatório',
-        });
+        if (!data.fps) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['fps'],
+            message: 'A Extensão é obrigatória',
+          });
+        }
+        if (!data.ext) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['ext'],
+            message: 'O FPS é obrigatório',
+          });
+        }
       }
     }
   });
