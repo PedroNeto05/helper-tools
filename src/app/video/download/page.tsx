@@ -129,6 +129,8 @@ export default function VideoDownloader() {
     const errors = searchVideoForm.formState.errors;
     if (!errors.url) return;
     if (errors.url?.message) {
+      downloadVideoOptionsForm.reset();
+      setVideoInfo(null);
       setDialogErrorMessage(errors.url.message);
       setDialogError(true);
       return;
