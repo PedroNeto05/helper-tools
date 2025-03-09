@@ -59,6 +59,7 @@ const downloadVideoOptionsSchema = z
     ext: z.string().optional(),
     fps: z.coerce.number().optional(),
     audioOnly: z.boolean(),
+    audioExt: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (!data.audioOnly) {
@@ -82,6 +83,14 @@ const downloadVideoOptionsSchema = z
             message: 'O FPS é obrigatório',
           });
         }
+      }
+    } else {
+      if (!data.audioExt) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['audioExt'],
+          message: 'A Extensão do áudio é obrigatória',
+        });
       }
     }
   });

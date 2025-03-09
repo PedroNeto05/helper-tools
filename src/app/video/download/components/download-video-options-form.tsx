@@ -80,6 +80,38 @@ export function VideoDownloadOptionsForm({
             />
             <FormField
               control={downloadVideoOptionsForm.control}
+              name='audioExt'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Extensão do Áudio</FormLabel>
+                  <Select
+                    {...field}
+                    disabled={!isValidVideoUrl || !isAudioOnly}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder='Selecione a extensão do áudio' />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Array.from(
+                        new Set(
+                          videoInfo?.audio_formats.map((format) => format.ext)
+                        )
+                      ).map((ext) => {
+                        return (
+                          <SelectItem key={ext} value={ext}>
+                            {ext}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={downloadVideoOptionsForm.control}
               name='resolution'
               render={({ field }) => (
                 <FormItem>
