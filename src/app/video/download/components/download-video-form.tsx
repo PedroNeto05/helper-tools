@@ -267,6 +267,42 @@ export function DownloadVideoForm({
                   </FormItem>
                 )}
               />
+              <FormField
+                control={downloadVideoOptionsForm.control}
+                name='fps'
+                render={({ field }) => (
+                  <FormItem>
+                    <Select
+                      {...field}
+                      disabled={!isValidVideoUrl || !currentExt}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Selecione o fps do vídeo' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {currentExt &&
+                          Array.from(
+                            new Set(
+                              videoInfo?.video_formats
+                                .filter(
+                                  (format) =>
+                                    format.resolution === currentResolution &&
+                                    format.ext === currentExt
+                                )
+                                .map((format) => format.fps)
+                            )
+                          ).map((fps) => (
+                            <SelectItem key={fps} value={fps.toString()}>
+                              {fps}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
             </CardContent>
             <CardFooter>
               <Button type='submit' className='w-full'>
