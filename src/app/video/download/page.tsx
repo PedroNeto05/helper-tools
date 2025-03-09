@@ -130,9 +130,9 @@ export default function VideoDownloader() {
     if (!errors.url) return;
     if (errors.url?.message) {
       setDialogErrorMessage(errors.url.message);
+      setDialogError(true);
       return;
     }
-    setDialogError(true);
   }
 
   async function getVideoInfo(url: string) {
