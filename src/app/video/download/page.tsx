@@ -53,11 +53,38 @@ const searchVideoFormSchema = z.object({
 
 export type SearchVideoForm = z.infer<typeof searchVideoFormSchema>;
 
-const downloadVideoOptionsSchema = z.object({
-  resolution: z.coerce.number().min(1, 'A Resolução é obrigatória'),
-  ext: z.string().nonempty({ message: 'A Extensão é obrigatória' }),
-  fps: z.coerce.number({ message: 'O FPS é obrigatório' }),
-});
+const downloadVideoOptionsSchema = z
+  .object({
+    resolution: z.coerce.number().optional(),
+    ext: z.string().optional(),
+    fps: z.coerce.number().optional(),
+    audioOnly: z.boolean(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.audioOnly) {
+      if (!data.resolution) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['resolution'],
+          message: 'A Resolução é obrigatória',
+        });
+      }
+      if (!data.fps) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['fps'],
+          message: 'A Extensão é obrigatória',
+        });
+      }
+      if (!data.ext) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['ext'],
+          message: 'O FPS é obrigatório',
+        });
+      }
+    }
+  });
 
 export type DownloadVideoOptionsForm = z.infer<
   typeof downloadVideoOptionsSchema
