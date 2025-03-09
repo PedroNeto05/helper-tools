@@ -185,17 +185,6 @@ export default function VideoDownloader() {
           currentExt={currentExt}
           currentResolution={currentResolution}
         />
-        {/* <DownloadVideoForm
-          isFetching={isFetching}
-          setDialogError={setDialogError}
-          setDialogErrorMessage={setDialogErrorMessage}
-          setIsFetching={setIsFetching}
-          setValidUrl={setValidUrl}
-          setVideoInfo={setVideoInfo}
-          setIsValidVideoUrl={setIsValidVideoUrl}
-          isValidVideoUrl={isValidVideoUrl}
-          videoInfo={videoInfo}
-        /> */}
       </div>
       <div className='flex flex-1 flex-col space-y-5'>
         <Card className='flex h-full flex-col'>
