@@ -5,13 +5,11 @@ import Image from 'next/image';
 import { VideoInfo } from '../page';
 
 interface VideoInformationCardProps {
-  isFetching: boolean;
   videoInfo: VideoInfo | null;
   className?: string;
 }
 
 export function VideoInformationCard({
-  isFetching,
   videoInfo,
   className,
 }: VideoInformationCardProps) {
@@ -21,15 +19,7 @@ export function VideoInformationCard({
         <CardTitle className='text-3xl'>Informações do Vídeo</CardTitle>
       </CardHeader>
       <CardContent className=''>
-        {isFetching ? (
-          <div className='flex items-center space-x-6'>
-            <Skeleton className='h-[115px] w-[280px]' />
-            <div className='flex w-full flex-col space-y-2'>
-              <Skeleton className='h-6 w-[75%]' />
-              <Skeleton className='h-4 w-[25%]' />
-            </div>
-          </div>
-        ) : videoInfo ? (
+        {videoInfo ? (
           <div className='flex space-x-6'>
             <Image
               src={videoInfo.thumbnail}
@@ -47,7 +37,15 @@ export function VideoInformationCard({
               </p>
             </div>
           </div>
-        ) : null}
+        ) : (
+          <div className='flex items-center space-x-6'>
+            <Skeleton className='h-[115px] w-[280px]' />
+            <div className='flex w-full flex-col space-y-2'>
+              <Skeleton className='h-6 w-[75%]' />
+              <Skeleton className='h-4 w-[25%]' />
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

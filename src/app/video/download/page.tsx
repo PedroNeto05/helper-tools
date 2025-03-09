@@ -171,7 +171,6 @@ export default function VideoDownloader() {
           isFetching={isFetching}
         />
         <VideoInformationCard
-          isFetching={isFetching}
           videoInfo={videoInfo}
           className='flex-1 items-center'
         />
