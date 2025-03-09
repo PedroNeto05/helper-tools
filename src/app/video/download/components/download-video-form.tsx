@@ -305,7 +305,11 @@ export function DownloadVideoForm({
               />
             </CardContent>
             <CardFooter>
-              <Button type='submit' className='w-full'>
+              <Button
+                type='submit'
+                className='w-full'
+                disabled={!isValidVideoUrl}
+              >
                 Adicionar a fila
               </Button>
             </CardFooter>
