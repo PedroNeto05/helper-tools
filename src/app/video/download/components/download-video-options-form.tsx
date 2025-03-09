@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/select';
 import { DownloadVideoOptionsForm, VideoInfo } from '../page';
 import { UseFormReturn } from 'react-hook-form';
+import { Switch } from '@/components/ui/switch';
 
 interface DownloadVideoFormProps {
   downloadVideoOptionsForm: UseFormReturn<DownloadVideoOptionsForm>;
@@ -31,6 +32,7 @@ interface DownloadVideoFormProps {
   videoInfo: VideoInfo | null;
   currentResolution: number;
   currentExt: string;
+  isAudioOnly: boolean;
   className?: string;
 }
 
@@ -42,6 +44,7 @@ export function VideoDownloadOptionsForm({
   videoInfo,
   currentResolution,
   currentExt,
+  isAudioOnly,
   className,
 }: DownloadVideoFormProps) {
   return (
@@ -61,11 +64,27 @@ export function VideoDownloadOptionsForm({
           <CardContent className='space-y-4'>
             <FormField
               control={downloadVideoOptionsForm.control}
+              name='audioOnly'
+              render={({ field }) => (
+                <FormItem className='border-border flex items-center justify-between rounded-md border p-2'>
+                  <FormLabel>Apenas Áudio</FormLabel>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      disabled={!isValidVideoUrl}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={downloadVideoOptionsForm.control}
               name='resolution'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Resolução</FormLabel>
-                  <Select {...field} disabled={!isValidVideoUrl}>
+                  <Select {...field} disabled={!isValidVideoUrl || isAudioOnly}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder='Selecione a resolução do vídeo' />
@@ -100,7 +119,9 @@ export function VideoDownloadOptionsForm({
                   <FormLabel>Extensão</FormLabel>
                   <Select
                     {...field}
-                    disabled={!isValidVideoUrl || !currentResolution}
+                    disabled={
+                      !isValidVideoUrl || !currentResolution || isAudioOnly
+                    }
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -135,7 +156,10 @@ export function VideoDownloadOptionsForm({
                 <FormItem>
                   <FormLabel>Fps</FormLabel>
 
-                  <Select {...field} disabled={!isValidVideoUrl || !currentExt}>
+                  <Select
+                    {...field}
+                    disabled={!isValidVideoUrl || !currentExt || isAudioOnly}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder='Selecione o fps do vídeo' />

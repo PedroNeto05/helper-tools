@@ -93,7 +93,6 @@ export type DownloadVideoOptionsForm = z.infer<
 export default function VideoDownloader() {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isValidVideoUrl, setIsValidVideoUrl] = useState<boolean>(false);
-  const [audioOnly, setAudioOnly] = useState<boolean>(false);
   const [dialogError, setDialogError] = useState<boolean>(false);
   const [dialogErrorMessage, setDialogErrorMessage] = useState<string>('');
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
@@ -128,6 +127,11 @@ export default function VideoDownloader() {
     control: downloadVideoOptionsForm.control,
     name: 'ext',
     defaultValue: '',
+  });
+  const isAudioOnly = useWatch({
+    control: downloadVideoOptionsForm.control,
+    name: 'audioOnly',
+    defaultValue: false,
   });
 
   async function handleSearch(data: SearchVideoForm) {
@@ -210,6 +214,7 @@ export default function VideoDownloader() {
           handleDownloadOptionsError={handleDownloadOptionsError}
           currentExt={currentExt}
           currentResolution={currentResolution}
+          isAudioOnly={isAudioOnly}
           className='flex-10'
         />
       </div>
