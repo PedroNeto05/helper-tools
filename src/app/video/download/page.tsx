@@ -184,6 +184,7 @@ export default function VideoDownloader() {
           handleDownloadOptionsError={handleDownloadOptionsError}
           currentExt={currentExt}
           currentResolution={currentResolution}
+          className='flex-10'
         />
       </div>
       <div className='flex flex-1 flex-col space-y-5'>

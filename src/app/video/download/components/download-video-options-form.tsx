@@ -31,6 +31,7 @@ interface DownloadVideoFormProps {
   videoInfo: VideoInfo | null;
   currentResolution: number;
   currentExt: string;
+  className?: string;
 }
 
 export function VideoDownloadOptionsForm({
@@ -41,9 +42,10 @@ export function VideoDownloadOptionsForm({
   videoInfo,
   currentResolution,
   currentExt,
+  className,
 }: DownloadVideoFormProps) {
   return (
-    <Card>
+    <Card className={className}>
       <Form {...downloadVideoOptionsForm}>
         <form
           onSubmit={downloadVideoOptionsForm.handleSubmit(

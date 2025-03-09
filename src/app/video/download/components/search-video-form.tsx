@@ -11,6 +11,7 @@ interface SearchVideoCardProps {
   handleSearch: (data: SearchVideoForm) => void;
   handleSearchError: () => void;
   isFetching: boolean;
+  className?: string;
 }
 
 export function SearchVideoCard({
@@ -18,9 +19,10 @@ export function SearchVideoCard({
   handleSearch,
   handleSearchError,
   isFetching,
+  className,
 }: SearchVideoCardProps) {
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader>
         <CardTitle className='text-center text-3xl'>Url do Vídeo</CardTitle>
       </CardHeader>
