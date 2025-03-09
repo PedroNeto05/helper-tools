@@ -31,7 +31,7 @@ interface DownloadVideoFormProps {
   isValidVideoUrl: boolean;
   videoInfo: VideoInfo | null;
   currentResolution: number;
-  currentExt: string;
+  currentExt?: string;
   isAudioOnly: boolean;
   className?: string;
 }
