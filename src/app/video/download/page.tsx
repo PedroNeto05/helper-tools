@@ -14,9 +14,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import Image from 'next/image';
-import { formatTime } from '@/utils/format-time';
 import { open } from '@tauri-apps/plugin-dialog';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
@@ -26,6 +23,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { invoke } from '@tauri-apps/api/core';
 import { VideoDownloadOptionsForm } from './components/download-video-options-form';
+import { VideoInformationCard } from './components/video-information-card';
 
 type VideoFormat = {
   format_id: string;
@@ -172,6 +170,12 @@ export default function VideoDownloader() {
           handleSearchError={handleSearchError}
           isFetching={isFetching}
         />
+        <VideoInformationCard
+          isFetching={isFetching}
+          videoInfo={videoInfo}
+          className='flex-1 items-center'
+        />
+
         <VideoDownloadOptionsForm
           videoInfo={videoInfo}
           isValidVideoUrl={isValidVideoUrl}
@@ -194,40 +198,6 @@ export default function VideoDownloader() {
         /> */}
       </div>
       <div className='flex flex-1 flex-col space-y-5'>
-        <Card className='flex-1 items-center'>
-          <CardHeader className='text-center'>
-            <CardTitle className='text-3xl'>Informações do Vídeo</CardTitle>
-          </CardHeader>
-          <CardContent className=''>
-            {isFetching ? (
-              <div className='flex items-center space-x-6'>
-                <Skeleton className='h-[115px] w-[280px]' />
-                <div className='flex w-full flex-col space-y-2'>
-                  <Skeleton className='h-6 w-[75%]' />
-                  <Skeleton className='h-4 w-[25%]' />
-                </div>
-              </div>
-            ) : videoInfo ? (
-              <div className='flex space-x-6'>
-                <Image
-                  src={videoInfo.thumbnail}
-                  width={200}
-                  height={200}
-                  alt='Thumbnail'
-                  className='rounded-lg'
-                />
-                <div className='flex w-full max-w-[40rem] flex-col truncate'>
-                  <p className='truncate text-xl font-semibold'>
-                    {videoInfo.title}
-                  </p>
-                  <p className='text-gray-500'>
-                    Duração: {formatTime(videoInfo.duration)}
-                  </p>
-                </div>
-              </div>
-            ) : null}
-          </CardContent>
-        </Card>
         <Card className='flex h-full flex-col'>
           <CardHeader className='text-center'>
             <CardTitle className='text-3xl'>Fila de Download</CardTitle>
