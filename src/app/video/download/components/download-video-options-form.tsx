@@ -23,6 +23,7 @@ import {
 import { DownloadVideoOptionsForm, VideoInfo } from '../page';
 import { UseFormReturn } from 'react-hook-form';
 import { Switch } from '@/components/ui/switch';
+import { useEffect } from 'react';
 
 interface DownloadVideoFormProps {
   downloadVideoOptionsForm: UseFormReturn<DownloadVideoOptionsForm>;
@@ -47,6 +48,16 @@ export function VideoDownloadOptionsForm({
   isAudioOnly,
   className,
 }: DownloadVideoFormProps) {
+  useEffect(() => {
+    if (isAudioOnly) {
+      downloadVideoOptionsForm.resetField('resolution');
+      downloadVideoOptionsForm.resetField('ext');
+      downloadVideoOptionsForm.resetField('fps');
+      return;
+    }
+    downloadVideoOptionsForm.resetField('audioExt');
+  }, [isAudioOnly, downloadVideoOptionsForm]);
+
   return (
     <Card className={className}>
       <Form {...downloadVideoOptionsForm}>
@@ -72,6 +83,7 @@ export function VideoDownloadOptionsForm({
                     <Switch
                       checked={field.value}
                       disabled={!isValidVideoUrl}
+                      defaultChecked={false}
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
