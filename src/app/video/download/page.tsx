@@ -7,7 +7,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { useState } from 'react';
-import { DownloadVideoForm } from '@/app/video/download/components/download-video-form';
 import {
   Dialog,
   DialogContent,
@@ -21,6 +20,12 @@ import { formatTime } from '@/utils/format-time';
 import { open } from '@tauri-apps/plugin-dialog';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
+import { SearchVideoCard } from './components/search-video-form';
+import { useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { invoke } from '@tauri-apps/api/core';
+import { VideoDownloadOptionsForm } from './components/download-video-options-form';
 
 type VideoFormat = {
   format_id: string;
@@ -44,6 +49,22 @@ export type VideoInfo = {
   audio_formats: AudioFormat[];
 };
 
+const searchVideoFormSchema = z.object({
+  url: z.string().url('Url Inválida'),
+});
+
+export type SearchVideoForm = z.infer<typeof searchVideoFormSchema>;
+
+const downloadVideoOptionsSchema = z.object({
+  resolution: z.coerce.number().min(1, 'A Resolução é obrigatória'),
+  ext: z.string().nonempty({ message: 'A Extensão é obrigatória' }),
+  fps: z.coerce.number({ message: 'O FPS é obrigatório' }),
+});
+
+export type DownloadVideoOptionsForm = z.infer<
+  typeof downloadVideoOptionsSchema
+>;
+
 export default function VideoDownloader() {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isValidVideoUrl, setIsValidVideoUrl] = useState<boolean>(false);
@@ -54,10 +75,111 @@ export default function VideoDownloader() {
   const [validUrl, setValidUrl] = useState('');
   const [downloadPath, setDownloadPath] = useState<string>('');
 
+  const searchVideoForm = useForm<SearchVideoForm>({
+    resolver: zodResolver(searchVideoFormSchema),
+    mode: 'onSubmit',
+    defaultValues: {
+      url: '',
+    },
+  });
+
+  const downloadVideoOptionsForm = useForm({
+    resolver: zodResolver(downloadVideoOptionsSchema),
+    mode: 'onSubmit',
+    defaultValues: {
+      resolution: 0,
+      ext: '',
+    },
+  });
+  const currentResolution = Number(
+    useWatch({
+      control: downloadVideoOptionsForm.control,
+      name: 'resolution',
+      defaultValue: 0,
+    })
+  );
+
+  const currentExt = useWatch({
+    control: downloadVideoOptionsForm.control,
+    name: 'ext',
+    defaultValue: '',
+  });
+
+  async function handleSearch(data: SearchVideoForm) {
+    downloadVideoOptionsForm.reset();
+    setIsFetching(true);
+    setValidUrl('');
+    setVideoInfo(null);
+    setIsValidVideoUrl(false);
+    try {
+      await invoke('validate_url', { url: data.url });
+    } catch (e) { // eslint-disable-line
+      setDialogErrorMessage('Url Inválida');
+      setDialogError(true);
+      setIsFetching(false);
+      return;
+    }
+    setValidUrl(data.url);
+    await getVideoInfo(data.url);
+    setIsFetching(false);
+    setIsValidVideoUrl(true);
+  }
+
+  function handleSearchError() {
+    const errors = searchVideoForm.formState.errors;
+    if (!errors.url) return;
+    if (errors.url?.message) {
+      setDialogErrorMessage(errors.url.message);
+      return;
+    }
+    setDialogError(true);
+  }
+
+  async function getVideoInfo(url: string) {
+    try {
+      const videoInfo: VideoInfo = await invoke('get_video_info', {
+        url,
+      });
+      setVideoInfo(videoInfo);
+    } catch (e) { // eslint-disable-line
+      setDialogErrorMessage('Erro ao buscar as informações do vídeo');
+      setDialogError(true);
+    }
+  }
+
+  function handleDownloadOptions(data: DownloadVideoOptionsForm) {
+    console.log(data);
+  }
+  function handleDownloadOptionsError() {
+    const errors = downloadVideoOptionsForm.formState.errors;
+    const firstError = Object.values(errors).find(
+      (error) => error?.message
+    )?.message;
+    if (!firstError) return;
+    setDialogErrorMessage(firstError);
+
+    setDialogError(true);
+  }
+
   return (
     <div className='flex h-full space-x-5'>
       <div className='flex flex-1 flex-col space-y-5'>
-        <DownloadVideoForm
+        <SearchVideoCard
+          searchVideoForm={searchVideoForm}
+          handleSearch={handleSearch}
+          handleSearchError={handleSearchError}
+          isFetching={isFetching}
+        />
+        <VideoDownloadOptionsForm
+          videoInfo={videoInfo}
+          isValidVideoUrl={isValidVideoUrl}
+          downloadVideoOptionsForm={downloadVideoOptionsForm}
+          handleDownloadOptions={handleDownloadOptions}
+          handleDownloadOptionsError={handleDownloadOptionsError}
+          currentExt={currentExt}
+          currentResolution={currentResolution}
+        />
+        {/* <DownloadVideoForm
           isFetching={isFetching}
           setDialogError={setDialogError}
           setDialogErrorMessage={setDialogErrorMessage}
@@ -67,7 +189,7 @@ export default function VideoDownloader() {
           setIsValidVideoUrl={setIsValidVideoUrl}
           isValidVideoUrl={isValidVideoUrl}
           videoInfo={videoInfo}
-        />
+        /> */}
       </div>
       <div className='flex flex-1 flex-col space-y-5'>
         <Card className='flex-1 items-center'>
