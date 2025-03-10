@@ -58,7 +58,7 @@ const downloadVideoOptionsSchema = z
     resolution: z.coerce.number().optional(),
     ext: z.string().optional(),
     fps: z.coerce.number().optional(),
-    audioOnly: z.boolean(),
+    audioOnly: z.boolean().optional(),
     audioExt: z.string().optional(),
   })
   .superRefine((data, ctx) => {
