@@ -99,6 +99,11 @@ export type DownloadVideoOptionsForm = z.infer<
   typeof downloadVideoOptionsSchema
 >;
 
+export type DownloadVideoItem = {
+  format_id: string;
+  url: string;
+};
+
 export default function VideoDownloader() {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isValidVideoUrl, setIsValidVideoUrl] = useState<boolean>(false);
@@ -107,6 +112,7 @@ export default function VideoDownloader() {
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
   const [validUrl, setValidUrl] = useState('');
   const [downloadPath, setDownloadPath] = useState<string>('');
+  const [downloadQueue, setDownloadQueue] = useState<DownloadVideoItem[]>([]);
 
   const searchVideoForm = useForm<SearchVideoForm>({
     resolver: zodResolver(searchVideoFormSchema),
@@ -190,8 +196,53 @@ export default function VideoDownloader() {
   }
 
   function handleDownloadOptions(data: DownloadVideoOptionsForm) {
-    console.log(data);
+    if (data.audioOnly) {
+      const filteredAudioFormats = videoInfo?.audio_formats.filter(
+        (format) => format.ext === data.audioExt
+      ) as AudioFormat[];
+
+      if (filteredAudioFormats.length === 1) {
+        setDownloadQueue((prevQueue) => [
+          ...prevQueue,
+          { format_id: filteredAudioFormats[0].format_id, url: validUrl },
+        ]);
+        return;
+      }
+
+      const bestFormat = filteredAudioFormats.reduce((prev, current) =>
+        current.tbr > prev.tbr ? current : prev
+      );
+
+      setDownloadQueue((prevQueue) => [
+        ...prevQueue,
+        { format_id: bestFormat.format_id, url: validUrl },
+      ]);
+      return;
+    }
+
+    const videoFormats = videoInfo?.video_formats.filter(
+      (format) =>
+        format.ext === data.ext && format.resolution === data.resolution
+    ) as VideoFormat[];
+
+    if (videoFormats.length === 1) {
+      setDownloadQueue((prevQueue) => [
+        ...prevQueue,
+        { format_id: videoFormats[0].format_id, url: validUrl },
+      ]);
+      return;
+    }
+
+    const bestFormat = videoFormats.reduce((prev, current) =>
+      current.tbr > prev.tbr ? current : prev
+    );
+
+    setDownloadQueue((prevQueue) => [
+      ...prevQueue,
+      { format_id: bestFormat.format_id, url: validUrl },
+    ]);
   }
+
   function handleDownloadOptionsError() {
     const errors = downloadVideoOptionsForm.formState.errors;
     const firstError = Object.values(errors).find(
