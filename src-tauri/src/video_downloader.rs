@@ -20,7 +20,7 @@ struct VideoInfo {
 struct VideoFormat {
     format_id: String,
     resolution: u32,
-    tbr: Option<f32>,
+    tbr: f32,
     fps: f32,
     ext: String,
 }
@@ -28,7 +28,7 @@ struct VideoFormat {
 #[derive(serde::Serialize)]
 struct AudioFormat {
     format_id: String,
-    tbr: Option<f32>,
+    tbr: f32,
     ext: String,
 }
 
@@ -86,8 +86,10 @@ pub async fn get_video_info(
     // Verifica o código de saída
     if exit_code == 0 {
         let stdout = String::from_utf8_lossy(&output.stdout).to_string();
-        let video_info: VideoInfo = serde_json::from_str(&stdout)
-            .map_err(|e| format!("Erro ao fazer parse do JSON: {}", e))?;
+        let video_info: VideoInfo = serde_json::from_str(&stdout).map_err(|e| {
+            println!("{}", e);
+            format!("Erro ao fazer parse do JSON: {}", e)
+        })?;
         let normalized_video_info = parse_video_info(video_info);
         let normalized_video_info_json = serde_json::to_string(&normalized_video_info)
             .map_err(|e| format!("Erro ao converter para JSON: {}", e))?;
@@ -108,7 +110,7 @@ fn parse_video_info(video_info: VideoInfo) -> NormalizedVideoInfo {
                 video_formats.push(VideoFormat {
                     format_id: format.format_id,
                     resolution: res,
-                    tbr: format.tbr,
+                    tbr: format.tbr.unwrap_or(0.0),
                     fps: format.fps.unwrap(),
                     ext: format.ext,
                 });
@@ -117,7 +119,7 @@ fn parse_video_info(video_info: VideoInfo) -> NormalizedVideoInfo {
             None => {
                 audio_formats.push(AudioFormat {
                     format_id: format.format_id,
-                    tbr: format.tbr,
+                    tbr: format.tbr.unwrap_or(0.0),
                     ext: format.ext,
                 });
             }

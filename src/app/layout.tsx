@@ -53,7 +53,7 @@ export default function RootLayout({
           <SidebarProvider>
             <AppSidebar />
             <div className='flex h-screen w-full flex-col'>
-              <div className='flex w-full space-x-5 p-4'>
+              <div className='flex w-full space-x-5 p-3'>
                 <SidebarTrigger className='cursor-pointer' />
                 <h1 className='text-xl font-semibold'>
                   {getPageTitle(pathname)}
