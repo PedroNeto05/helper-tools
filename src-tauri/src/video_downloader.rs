@@ -20,7 +20,7 @@ struct VideoInfo {
 struct VideoFormat {
     format_id: String,
     resolution: u32,
-    tbr: Option<f32>,
+    tbr: f32,
     fps: f32,
     ext: String,
 }
@@ -28,7 +28,7 @@ struct VideoFormat {
 #[derive(serde::Serialize)]
 struct AudioFormat {
     format_id: String,
-    tbr: Option<f32>,
+    tbr: f32,
     ext: String,
 }
 
@@ -110,7 +110,7 @@ fn parse_video_info(video_info: VideoInfo) -> NormalizedVideoInfo {
                 video_formats.push(VideoFormat {
                     format_id: format.format_id,
                     resolution: res,
-                    tbr: format.tbr,
+                    tbr: format.tbr.unwrap_or(0.0),
                     fps: format.fps.unwrap(),
                     ext: format.ext,
                 });
@@ -119,7 +119,7 @@ fn parse_video_info(video_info: VideoInfo) -> NormalizedVideoInfo {
             None => {
                 audio_formats.push(AudioFormat {
                     format_id: format.format_id,
-                    tbr: format.tbr,
+                    tbr: format.tbr.unwrap_or(0.0),
                     ext: format.ext,
                 });
             }

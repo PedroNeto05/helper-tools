@@ -28,14 +28,14 @@ import { VideoInformationCard } from './components/video-information-card';
 type VideoFormat = {
   format_id: string;
   resolution: number;
-  tbr: number | null;
+  tbr: number;
   fps: number;
   ext: string;
 };
 
 type AudioFormat = {
   format_id: string;
-  tbr: number | null;
+  tbr: number;
   ext: string;
 };
 
