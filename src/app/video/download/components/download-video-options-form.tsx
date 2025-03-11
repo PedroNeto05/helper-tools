@@ -82,7 +82,10 @@ export function VideoDownloadOptionsForm({
                   <FormControl>
                     <Switch
                       checked={field.value}
-                      disabled={!isValidVideoUrl}
+                      disabled={
+                        !isValidVideoUrl ||
+                        videoInfo?.audio_formats.length === 0
+                      }
                       defaultChecked={false}
                       onCheckedChange={field.onChange}
                     />
@@ -128,7 +131,12 @@ export function VideoDownloadOptionsForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Resolução</FormLabel>
-                  <Select {...field} disabled={!isValidVideoUrl || isAudioOnly}>
+                    disabled={
+                      !isValidVideoUrl ||
+                      isAudioOnly ||
+                      videoInfo?.video_formats.length === 0
+                    }
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder='Selecione a resolução do vídeo' />
