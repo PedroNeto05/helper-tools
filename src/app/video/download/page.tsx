@@ -158,9 +158,9 @@ export default function VideoDownloader() {
       return;
     }
     setValidUrl(data.url);
-    await getVideoInfo(data.url);
+    const validVideoInfo = await getVideoInfo(data.url);
     setIsFetching(false);
-    setIsValidVideoUrl(true);
+    setIsValidVideoUrl(validVideoInfo);
   }
 
   function handleSearchError() {
@@ -181,9 +181,11 @@ export default function VideoDownloader() {
         url,
       });
       setVideoInfo(videoInfo);
+      return true;
     } catch (e) { // eslint-disable-line
       setDialogErrorMessage('Erro ao buscar as informações do vídeo');
       setDialogError(true);
+      return false;
     }
   }
 
