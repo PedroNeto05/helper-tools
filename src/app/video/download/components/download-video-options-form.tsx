@@ -131,6 +131,13 @@ export function VideoDownloadOptionsForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Resolução</FormLabel>
+                  <Select
+                    {...field}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      downloadVideoOptionsForm.resetField('fps');
+                      downloadVideoOptionsForm.resetField('ext');
+                    }}
                     disabled={
                       !isValidVideoUrl ||
                       isAudioOnly ||
