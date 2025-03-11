@@ -40,8 +40,8 @@ def get_video_info(url: str) -> dict:
                 video_data['formats'].append({
                     'format_id': f.get('format_id'),
                     'resolution': height if height else None,
-                    'tbr': f.get('tbr', None),
-                    'fps': f.get('fps', None),
+                    'tbr': f.get('tbr'),
+                    'fps': f.get('fps'),
                     'ext': f.get('ext')
                 })
 
