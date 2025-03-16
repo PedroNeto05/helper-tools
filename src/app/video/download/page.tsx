@@ -218,7 +218,12 @@ export default function VideoDownloader() {
       if (filteredAudioFormats.length === 1) {
         setDownloadQueue((prevQueue) => [
           ...prevQueue,
-          { format_id: filteredAudioFormats[0].format_id, url: validUrl },
+          {
+            format_id: filteredAudioFormats[0].format_id,
+            url: validUrl,
+            thumbnail: videoInfo?.thumbnail || '',
+            title: videoInfo?.title || '',
+          },
         ]);
         return;
       }
@@ -229,7 +234,12 @@ export default function VideoDownloader() {
 
       setDownloadQueue((prevQueue) => [
         ...prevQueue,
-        { format_id: bestFormat.format_id, url: validUrl },
+        {
+          format_id: bestFormat.format_id,
+          url: validUrl,
+          thumbnail: videoInfo?.thumbnail || '',
+          title: videoInfo?.title || '',
+        },
       ]);
       return;
     }
@@ -242,7 +252,12 @@ export default function VideoDownloader() {
     if (videoFormats.length === 1) {
       setDownloadQueue((prevQueue) => [
         ...prevQueue,
-        { format_id: videoFormats[0].format_id, url: validUrl },
+        {
+          format_id: videoFormats[0].format_id,
+          url: validUrl,
+          thumbnail: videoInfo?.thumbnail || '',
+          title: videoInfo?.title || '',
+        },
       ]);
       return;
     }
@@ -254,6 +269,12 @@ export default function VideoDownloader() {
     setDownloadQueue((prevQueue) => [
       ...prevQueue,
       { format_id: bestFormat.format_id, url: validUrl },
+      {
+        format_id: bestFormat.format_id,
+        url: validUrl,
+        thumbnail: videoInfo?.thumbnail || '',
+        title: videoInfo?.title || '',
+      },
     ]);
   }
 
