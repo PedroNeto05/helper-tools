@@ -16,7 +16,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { open } from '@tauri-apps/plugin-dialog';
 import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@radix-ui/react-scroll-area';
 import { SearchVideoCard } from './components/search-video-form';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -24,6 +23,7 @@ import { z } from 'zod';
 import { invoke } from '@tauri-apps/api/core';
 import { VideoDownloadOptionsForm } from './components/download-video-options-form';
 import { VideoInformationCard } from './components/video-information-card';
+import { DownloadVideoQueue } from './components/download-video-queue';
 
 type VideoFormat = {
   format_id: string;
@@ -102,6 +102,8 @@ export type DownloadVideoOptionsForm = z.infer<
 export type DownloadVideoItem = {
   format_id: string;
   url: string;
+  title: string;
+  thumbnail: string;
 };
 
 export default function VideoDownloader() {
@@ -281,17 +283,10 @@ export default function VideoDownloader() {
         />
       </div>
       <div className='flex flex-1 flex-col space-y-5'>
-        <Card className='flex h-full flex-col'>
-          <CardHeader className='text-center'>
-            <CardTitle className='text-3xl'>Fila de Download</CardTitle>
-          </CardHeader>
-          <CardContent className='flex flex-1 flex-col overflow-hidden'>
-            <ScrollArea className='flex-1 overflow-y-auto'>
-              <div className='absolute flex w-full flex-col space-y-4'></div>
-            </ScrollArea>
-          </CardContent>
-        </Card>
-
+        <DownloadVideoQueue
+          videoQueue={downloadQueue}
+          setVideoQueue={setDownloadQueue}
+        />
         <Card className='flex-1'>
           <CardHeader className='text-center text-3xl'>
             <CardTitle>Pasta de Download</CardTitle>
