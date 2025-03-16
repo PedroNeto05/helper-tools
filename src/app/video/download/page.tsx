@@ -159,7 +159,8 @@ export default function VideoDownloader() {
     setIsValidVideoUrl(false);
     try {
       await invoke('validate_url', { url: data.url });
-    } catch (e) { // eslint-disable-line
+    } catch (e) {
+      // eslint-disable-line
       setDialogErrorMessage('Url Inválida');
       setDialogError(true);
       setIsFetching(false);
@@ -190,7 +191,8 @@ export default function VideoDownloader() {
       });
       setVideoInfo(videoInfo);
       return true;
-    } catch (e) { // eslint-disable-line
+    } catch (e) {
+      // eslint-disable-line
       setDialogErrorMessage('Erro ao buscar as informações do vídeo');
       setDialogError(true);
       return false;
