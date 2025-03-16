@@ -225,6 +225,11 @@ export default function VideoDownloader() {
             title: videoInfo?.title || '',
           },
         ]);
+        setVideoInfo(null);
+        setValidUrl('');
+        setIsValidVideoUrl(false);
+        downloadVideoOptionsForm.reset();
+        searchVideoForm.reset();
         return;
       }
 
@@ -241,6 +246,11 @@ export default function VideoDownloader() {
           title: videoInfo?.title || '',
         },
       ]);
+      setVideoInfo(null);
+      setValidUrl('');
+      setIsValidVideoUrl(false);
+      downloadVideoOptionsForm.reset();
+      searchVideoForm.reset();
       return;
     }
 
@@ -259,6 +269,11 @@ export default function VideoDownloader() {
           title: videoInfo?.title || '',
         },
       ]);
+      setVideoInfo(null);
+      setValidUrl('');
+      setIsValidVideoUrl(false);
+      downloadVideoOptionsForm.reset();
+      searchVideoForm.reset();
       return;
     }
 
@@ -268,7 +283,6 @@ export default function VideoDownloader() {
 
     setDownloadQueue((prevQueue) => [
       ...prevQueue,
-      { format_id: bestFormat.format_id, url: validUrl },
       {
         format_id: bestFormat.format_id,
         url: validUrl,
@@ -276,6 +290,12 @@ export default function VideoDownloader() {
         title: videoInfo?.title || '',
       },
     ]);
+
+    setVideoInfo(null);
+    setValidUrl('');
+    setIsValidVideoUrl(false);
+    downloadVideoOptionsForm.reset();
+    searchVideoForm.reset();
   }
 
   function handleDownloadOptionsError() {
