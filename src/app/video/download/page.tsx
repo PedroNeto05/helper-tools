@@ -200,6 +200,16 @@ export default function VideoDownloader() {
   }
 
   function handleDownloadOptions(data: DownloadVideoOptionsForm) {
+    const videoAlreadyInQueue = downloadQueue.find(
+      (item) => item.url === validUrl
+    );
+
+    if (videoAlreadyInQueue) {
+      setDialogErrorMessage('Vídeo já está na fila de download');
+      setDialogError(true);
+      return;
+    }
+
     if (data.audioOnly) {
       const filteredAudioFormats = videoInfo?.audio_formats.filter(
         (format) => format.ext === data.audioExt
