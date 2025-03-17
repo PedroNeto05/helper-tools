@@ -29,8 +29,11 @@ export function DownloadVideoQueue({
             {videoQueue &&
               videoQueue.map((item) => {
                 return (
-                  <div className='border-border flex w-full justify-between space-x-4 rounded-md border p-4'>
-                    <div className='flex space-x-6' key={item.thumbnail}>
+                  <div
+                    key={item.thumbnail}
+                    className='border-border flex justify-between space-x-4 rounded-md border p-4'
+                  >
+                    <div className='flex w-full space-x-6'>
                       <Image
                         src={item.thumbnail}
                         width={150}
