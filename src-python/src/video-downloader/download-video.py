@@ -3,18 +3,10 @@ from sys import exit, argv
 
 
 def download_video(url: str, output_path: str, format_id):
-    last_progress = 0  # Variável para armazenar o último progresso exibido
-
     def progress_hook(d):
-        nonlocal last_progress
-        if d['status'] == 'downloading' and d.get('_total_bytes'):
-            total = d['_total_bytes']
-            downloaded = d.get('_downloaded_bytes', 0)
-            progress = int((downloaded / total) * 100)
-
-            if progress > last_progress:  # Garante que o valor nunca diminua
-                print(f"\r{progress}%", end='', flush=True)
-                last_progress = progress
+        if d['status'] == 'downloading':
+            progress = d.get('_percent_str', 'N/A').strip()
+            print(progress)
 
     ydl_opts = {
         'format': format_id,
